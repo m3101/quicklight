@@ -316,6 +316,7 @@ char qlvectintri(const qlvect *a,const qltri *t)
 double pmaxs=0;
 double maxs=0;
 
+#ifndef QL_CUSTOM_RAYS
 void qlcalcray(qlray *ray,const qltri**triangles)
 {
     int i=0;
@@ -355,6 +356,8 @@ void qlcalcray(qlray *ray,const qltri**triangles)
         ray->screen->data[(ray->rx+ray->ry*ray->screen->w)*ray->screen->s+2]=0;
     }
 }
+#endif
+#ifndef QL_CUSTOM_STEP
 void qlstep(qlcamera *camera,const qltri**triangles)
 {
     if(!camera||!triangles||!triangles[0])return;
@@ -365,6 +368,7 @@ void qlstep(qlcamera *camera,const qltri**triangles)
         qlcalcray(camera->rays[i],triangles);
     pmaxs=maxs;
 }
+#endif
 
 /*Interaction functions*/
 

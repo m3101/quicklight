@@ -178,10 +178,16 @@ char qlvectintri(const qlvect *a,const qltri *t);
 
 /*Outputs a pointer to the address of the pixel at (x/s,y/s)*/
 #define qlresolutionmultiply(x,y,scale) (floor(x/scale)+floor(y/scale)*xlen)*3
+
+/*The following functions may be redefined by your own application*/
+#ifndef QL_CUSTOM_RAYS
 /*Calculates one cycle of a ray*/
 void qlcalcray(qlray *ray,const qltri**triangles);
+#endif
+#ifndef QL_CUSTOM_STEP
 /*Cycles all the camera's rays*/
 void qlstep(qlcamera *camera,const qltri**triangles);
+#endif
 
 /*Interaction functions*/
 
