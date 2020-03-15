@@ -24,8 +24,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-static Colormap colormap=0;
-static int fast_color_mode=0;
+Colormap colormap=0;
+int fast_color_mode=0;
 
 /*
 Many thanks to the University of Notre Dame for their gfx API.
@@ -151,4 +151,5 @@ char qlevent(qlscreen *screen)
 	} else if(event.type==ButtonPress) {
 		return event.xbutton.button;
 	}
+    return 0;
 }

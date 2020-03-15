@@ -98,8 +98,7 @@ qlcamera *Qlcamera(qlraster *image,const qlvect *pos,const qlvect *dir,const dou
 {
     if(!image||!pos||!dir)return NULL;
     qlcamera *ret=malloc(sizeof(qlcamera));
-    qlray *ray;
-    qlvect *rpos=&_qlgpm0,*rdir=&_qlgpm1,*rotaxis=&_qlgpm2,*focalpoint=&_qlgpm3;
+    qlvect *rpos=&_qlgpm0,*rdir=&_qlgpm1,*focalpoint=&_qlgpm3;
     int length=image->h*image->w;
     int i,x,y;
     ret->pos=*pos;
@@ -130,7 +129,6 @@ qlcamera *Qlcamera(qlraster *image,const qlvect *pos,const qlvect *dir,const dou
 void qlupdatecamera(qlcamera *camera)
 {
     if(!camera)return;
-    qlray *ray;
     qlvect *rpos=&_qlgpm0,*rdir=&_qlgpm1,*rotaxis=&_qlgpm2,*focalpoint=&_qlgpm3;
     int length=camera->image->h*camera->image->w;
     int i,x,y;
@@ -324,7 +322,6 @@ void qlcalcray(qlray *ray,const qltri**triangles)
     double min=__DBL_MAX__;
     qlvect *pos=&_qlgpm0,*dir=&_qlgpm1;
     if(!ray||!triangles||!(triangles[0]))return;
-    double dirnorm=sqrt(qlscproduct(&ray->dir,&ray->dir));
     double S=0.0;
     double bright;
     while(triangles[i]!=NULL)
@@ -379,7 +376,6 @@ double fltick=0.1;
 void qlcameractl(qlcamera *camera,char c)
 {
     qlvect *dir=&_qlgpm0,*norm=&_qlgpm1;
-    double dirnorm=qlscproduct(&camera->dir,&camera->dir);
     if(c)
     {
         switch (c)

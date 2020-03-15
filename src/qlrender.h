@@ -35,8 +35,8 @@ SOFTWARE.
 
 /*Data structures and allocation functions*/
 
-static Colormap colormap;
-static int fast_color_mode;
+Colormap colormap;
+int fast_color_mode;
 
 /*
 A qlrender screen instance (opens a X11 instance)
