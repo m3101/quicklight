@@ -1,6 +1,14 @@
 #include <stdio.h>
 #include <math.h>
 #include "./qlrender.h"
+#define QL_STRINGIZE(x) #x
+#define QL_CUSTOM_NAME(x) QL_STRINGIZE(x)
+#ifdef QL_CUSTOM_STEP
+#include QL_CUSTOM_NAME(QL_CUSTOM_STEP)
+#endif
+#ifdef QL_CUSTOM_RAYS
+#include QL_CUSTOM_NAME(QL_CUSTOM_RAYS)
+#endif
 
 /*
 Copyright (c) 2020 Amélia O. F. da S.
