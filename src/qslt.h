@@ -1,7 +1,7 @@
-#include "./slowlight.h"
+#include "./quicklight.h"
 
 /*
-slt (SlowLight Triangles) file reader.
+slt (slowLight Triangles) file reader for quicklight.
 
 Copyright (c) 2020 Amélia O. F. da S.
 
@@ -24,20 +24,20 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef SLT
-#define SLT
+#ifndef QSLT
+#define QSLT
 
 /*
-Reads a slt file and outputs a NULL-sentinel-terminated list of Triangles
+Reads a qlt file and outputs a NULL-sentinel-terminated list of Triangles
 */
-sltri** sltToSltriList(const char* fname);
+qltri** qltToQltriList(const char* fname);
 /*
 Frees the memory allocated to a triangle list
 */
-void freesltriarray(sltri*** array);
+void freeqltriarray(qltri*** array);
 /*
 Returns the length of a NULL-sentinel list
 */
-int sllen(void** array);
+int qllen(void** array);
 
 #endif

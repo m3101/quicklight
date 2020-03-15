@@ -1,5 +1,5 @@
-#include "slt.h"
-#include "slowlight.h"
+#include "qslt.h"
+#include "quicklight.h"
 #include <stdio.h>
 #include <stdlib.h>
 /*
@@ -23,10 +23,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
-sltri** sltToSltriList(const char* fname)
+qltri** qltToQltriList(const char* fname)
 {
-    sltri **ret=NULL;
-    slvect *aa=Slvect(0,0,0),*bb=Slvect(0,0,0),*cc=Slvect(0,0,0);
+    qltri **ret=NULL;
+    qlvect *aa=Qlvect(0,0,0),*bb=Qlvect(0,0,0),*cc=Qlvect(0,0,0);
     FILE* f=fopen(fname,"r");
     if(!f)return NULL;
     char r,g,b;
@@ -53,7 +53,7 @@ sltri** sltToSltriList(const char* fname)
                 fscanf(f,"%lf",&cc->x);
                 fscanf(f,"%lf",&cc->y);
                 fscanf(f,"%lf",&cc->z);
-                ret[i]=Sltri(aa,bb,cc);
+                ret[i]=Qltri(aa,bb,cc);
                 ret[i]->colour[0]=r;
                 ret[i]->colour[1]=g;
                 ret[i++]->colour[2]=b;
@@ -61,7 +61,7 @@ sltri** sltToSltriList(const char* fname)
             }
             else{
                 fscanf(f,"%d",&len);
-                ret=malloc(sizeof(sltri*)*len+1);
+                ret=malloc(sizeof(qltri*)*len+1);
                 ret[len]=NULL;
                 fscanf(f,"%*[^\n]");fscanf(f,"%*[\n\r]");
             }
@@ -71,7 +71,7 @@ sltri** sltToSltriList(const char* fname)
     return ret;
 }
 
-void freesltriarray(sltri*** array)
+void freeqltriarray(qltri*** array)
 {
     if(!array||!(*array))return;
     int i=0;
@@ -80,7 +80,7 @@ void freesltriarray(sltri*** array)
     *array=NULL;
 }
 
-int sllen(void** array)
+int qllen(void** array)
 {
     if(!array)return 0;
     int i=0;

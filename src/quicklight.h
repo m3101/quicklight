@@ -1,5 +1,5 @@
 /*
-Slowlight raycaster-like renderer
+Quicklight raycaster-like renderer
 
 Copyright (c) 2020 Amélia O. F. da S.
 
@@ -22,136 +22,134 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-#ifndef SLOWLIGHT
-#define SLOWLIGHT
-#define SL_PI 3.14159265358979323846
+#ifndef QUICKLIGHT
+#define QUICKLIGHT
+#define QL_PI 3.14159265358979323846
 /*Data structures and allocation functions*/
 
 /*
 A raster image.
 */
-typedef struct _slraster {
+typedef struct _qlraster {
     char* data;/*Raster data. 0-th byte belongs to the top left pixel. (w*s)-th byte belongs to the leftmost pixel of the second line.*/
     int w;/*Width, in pixels*/
     int h;/*Height, in pixels*/
     int s;/*size of each pixel (e.g. 3 for 0-255 RGB pixels)*/
-}slraster;
+}qlraster;
 /*
-Instantiates a slraster object.
-One should use the freeslraster to free its memory (as it allocates memory for storing the image data)
+Instantiates a qlraster object.
+One should use the freeqlraster to free its memory (as it allocates memory for storing the image data)
 */
-slraster* Slraster(int w, int h, int s);
-/*Frees a slraster object*/
-void freeslraster(slraster** obj);
+qlraster* Qlraster(int w, int h, int s);
+/*Frees a qlraster object*/
+void freeqlraster(qlraster** obj);
 
 /*
 A vector object.
 */
-typedef struct _slvect {
+typedef struct _qlvect {
     double x;/*The point's x coordinate*/
     double y;/*The point's y coordinate*/
     double z;/*The point's z coordinate*/ 
-} slvect;
-/*Instantiates a slvect object*/
-slvect* Slvect(double x, double y, double z);
+} qlvect;
+/*Instantiates a qlvect object*/
+qlvect* Qlvect(double x, double y, double z);
 
 /*
 A ray object.
 */
-typedef struct _slray {
-    slraster* screen;/*The raster image that'll receive the ray's value when it hits something*/
+typedef struct _qlray {
+    qlraster* screen;/*The raster image that'll receive the ray's value when it hits something*/
     int rx;/*The x coordinate of the pixel that'll be updated*/
     int ry;/*The y coordinate of the pixel that'll be updated*/
-    int c;/*Number of cycles passed since last collision*/
-    slvect pos;/*A vector that marks the ray's position*/
-    slvect dir;/*A direction vector*/
-    double depth;/*Depth at which the ray respawns*/
-}slray;
-/*Instantiates a slray object. Vectors will be copied to the ray, not passed by reference.*/
-slray* Slray(slraster* screen, int rx, int ry, const slvect *pos, const slvect *dir);
+    qlvect pos;/*A vector that marks the ray's position*/
+    qlvect dir;/*A direction vector*/
+    double depth;/*Depth at which the ray return black*/
+}qlray;
+/*Instantiates a qlray object. Vectors will be copied to the ray, not passed by reference.*/
+qlray* Qlray(qlraster* screen, int rx, int ry, const qlvect *pos, const qlvect *dir);
 
 /*
 A triangle object
 */
-typedef struct _sltri {
-    slvect a;/*First vertext*/
-    slvect b;/*Second vertex*/
-    slvect c;/*Third vertex*/
+typedef struct _qltri {
+    qlvect a;/*First vertext*/
+    qlvect b;/*Second vertex*/
+    qlvect c;/*Third vertex*/
     char colour[3];/*Triangle colour*/
-}sltri;
-/*Instantiates a sltri object. Vectors will be copied to the triangle, not passed by reference.*/
-sltri* Sltri(const slvect *a,const slvect *b,const slvect *c);
+}qltri;
+/*Instantiates a qltri object. Vectors will be copied to the triangle, not passed by reference.*/
+qltri* Qltri(const qlvect *a,const qlvect *b,const qlvect *c);
 
 /*
 A camera object.
-One should free its memory with freeslcamera, as it allocates many ray objects which might not be freed automatically.
+One should free its memory with freeqlcamera, as it allocates many ray objects which might not be freed automatically.
 */
-typedef struct _slcamera{
-    slraster *image;/*Image object*/
-    slray** rays;/*slray objects associated with this camera*/
-    slvect pos;/*Camera position*/
-    slvect dir;/*Camera orientation*/
+typedef struct _qlcamera{
+    qlraster *image;/*Image object*/
+    qlray** rays;/*qlray objects associated with this camera*/
+    qlvect pos;/*Camera position*/
+    qlvect dir;/*Camera orientation*/
     double roll;/*Camera roll angle (extra orientation component)*/
     double fl;/*"Focal length" of the camera. Affects the ray angles*/
     double w;/*Camera width in "real-world" units (same units as the vectors)*/
     double h;/*Camera height in "real-world" units (same units as the vectors)*/
-    double raystep;/*Camera raystep*/
     double depth;/*Depth at which rays respawn*/
-} slcamera;
+} qlcamera;
 /*
-Generates a slcamera object from a slraster object and parameters.
-Most parameters come from slcamera properties.
+Generates a qlcamera object from a qlraster object and parameters.
+Most parameters come from qlcamera properties.
 Vectors will be copied, not stored by reference, so you can reuse them without affecting the camera.
 raystep dictates how long each ray will move for each step
 */
-slcamera *Slcamera(slraster *image,const slvect *pos,const slvect *dir,const double roll,const double fl,const double w,const double h,const double raystep,const double depth);
+qlcamera *Qlcamera(qlraster *image,const qlvect *pos,const qlvect *dir,const double roll,const double fl,const double w,const double h,const double depth);
 /*
 Updates a camera's rays to its current parameters and position
 rnd defines the amplitude of the random starting length of the rays
 (rnd=0 initializes the ray with length 0, that is, at the camera)
 */
-void slupdatecamera(slcamera *camera,int rnd);
-/*Frees a slcamera object*/
-void freeslcamera(slcamera **camera);
+void qlupdatecamera(qlcamera *camera);
+/*Frees a qlcamera object*/
+void freeqlcamera(qlcamera **camera);
 
 /*Vector functions*/
 
 /*
 Scalar product (takes two vector as input and outputs their internal product (sum of products of coordinates))
 */
-double slscproduct(const slvect *a,const slvect *b);
+double qlscproduct(const qlvect *a,const qlvect *b);
 /*
 3d-Vectorial product. Outputs a vector perpendicular to both input vectors at c.
 C = A x B
-slvects A,B,C;
-slscproduct(&A,&B,&C);
+qlvects A,B,C;
+qlscproduct(&A,&B,&C);
 A=(a,b,c), b=(d,e,f)
 # # | i  j  k |
 p = | a  b  c | = (bf-ce,cd-af,ae-bd)
 # # | d  e  f |
 */
-void slvectproduct(const slvect *a,const slvect *b,slvect *c);
+void qlvectproduct(const qlvect *a,const qlvect *b,qlvect *c);
 /*
 Multiply a vector by a scalar. B=s*A
 */
-void slvectscale(const slvect *a,double s,slvect *b);
+void qlvectscale(const qlvect *a,double s,qlvect *b);
 /*
 Sum two vectors. C=A+B
 */
-void slvectsum(const slvect *a,const slvect *b, slvect *c);
+void qlvectsum(const qlvect *a,const qlvect *b, qlvect *c);
 /*
 Subtract two vectors. C=A-B
 */
-void slvectsub(const slvect *a,const slvect *b, slvect *c);
+void qlvectsub(const qlvect *a,const qlvect *b, qlvect *c);
 
 /*Normalizes a vector (so that its length is 1)*/
-void slvectnormalize(slvect *a);
+void qlvectnormalize(qlvect *a);
 
 /*Rotates a vector around the x,y and z axes by rx,ry and rz radians.*/
-void slvectrotate(slvect *a,double rx,double ry,double rz);
+void qlvectrotate(qlvect *a,double rx,double ry,double rz);
 
 /*Rotates a vector around the v axis by rv radians.*/
-void slvectrotateaxis(slvect *a,const slvect *r,double rv);
+void qlvectrotateaxis(qlvect *a,const qlvect *r,double rv);
 
 /*Vector-Triangle functions*/
 
@@ -159,7 +157,7 @@ void slvectrotateaxis(slvect *a,const slvect *r,double rv);
 Calculates the factor by which a vector should be scaled to interesect a plane defined by a triangle t.
 Said vector is defined by two vectors, one indicating its position and one for the orientation
 Vector A,B; Triangle T
-s=slvectintersect(a,t)
+s=qlvectintersect(a,t)
 If s is 0:
     Vector is already on plane.
 If s is inf:
@@ -168,22 +166,22 @@ Else:
     Point p= A.s
     p lies on the plane on which T lies.
 */
-double slvectintersect(const slvect *pos,const slvect *dir,const sltri *t);
+double qlvectintersect(const qlvect *pos,const qlvect *dir,const qltri *t);
 /*
-Calculates whether a point (vector) lies within the subspace defined by a triangle sliding along its normal axis.
+Calculates whether a point (vector) lies within the subspace defined by a triangle qliding along its normal axis.
 (E.g. if the point and the triangle are at the same plane, calculates whether the point is inside the triangle).
 Returns 1 when the point lies within the subspace and 0 otherwise (or -1 for errors).
 */
-char slvectintri(const slvect *a,const sltri *t);
+char qlvectintri(const qlvect *a,const qltri *t);
 
 /*Raycasting functions*/
 
-/*Randomizes the initial positions of the rays*/
-void slrandray(slcamera *camera,int maxc);
+/*Outputs a pointer to the address of the pixel at (x/s,y/s)*/
+#define qlresolutionmultiply(x,y,scale) (floor(x/scale)+floor(y/scale)*xlen)*3
 /*Calculates one cycle of a ray*/
-void slcalcray(slray *ray,const sltri**triangles);
+void qlcalcray(qlray *ray,const qltri**triangles);
 /*Cycles all the camera's rays*/
-void slstep(slcamera *camera,const sltri**triangles);
+void qlstep(qlcamera *camera,const qltri**triangles);
 
 /*Interaction functions*/
 
@@ -204,14 +202,14 @@ Use:
 *r and f for y-rotation
 *z and x for camera focal length
 */
-void slcameractl(slcamera *camera,char c,int rand);
+void qlcameractl(qlcamera *camera,char c);
 
 /*Constants*/
 /*(1,0,0)*/
-slvect slx;
+qlvect qlx;
 /*(0,1,0)*/
-slvect sly;
+qlvect qly;
 /*(0,0,1)*/
-slvect slz;
+qlvect qlz;
 
 #endif
